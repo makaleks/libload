@@ -1,0 +1,8 @@
+# Build directory
+build/
+# Vim temporary files
+*.swp
+*.swo
+*~
+# My file with table of API compability, too heavy to be a part of the repo
+Platforms_ru.ods
