@@ -31,17 +31,17 @@ conf_file = configure_file(
     },
 )
 # https://mesonbuild.com/Configuration.html#a-full-example
-# Use current build directory to find a build-time generated config.h file
 extended_lib_include_dirs = [
     lib_include_dirs,
+    # Use current build directory to find a build-time generated config.h file
     include_directories('.'),
 ]
 
 rpath_value = '$ORIGIN'
 
 libload_both = both_libraries(
-  'libload', 
-  sources, 
+  'libload',
+  sources,
   dependencies:        libload_dep,
   include_directories: lib_include_dirs,
   # Project name already contains 'lib' prefix
@@ -54,6 +54,10 @@ libload_both = both_libraries(
 libload_static = libload_both.get_static_lib()
 libload_shared = libload_both.get_shared_lib()
 
-# RU-only note: ninja и meson для русского используют кодировку cp1251
+libload_dep = declare_dependency(
+  link_with: libload_both, include_directories: lib_include_dirs
+)
+
+# RU-only note: ninja и meson для русского вывода используют кодировку cp1251
 # но visual studio cmd использует cp866 (выводится командой chcp)
 # Починить пожно прогоном chcp1251
