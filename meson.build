@@ -10,6 +10,10 @@ lib_include_dirs = include_directories('include')
 
 subdir('include')
 subdir('src')
-subdir('tests')
+
+# Avoid file collisions with callee project with `meson-out` flat layout
+if not meson.is_subproject()
+  subdir('tests')
+endif
 
 
