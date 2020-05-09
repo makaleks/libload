@@ -37,8 +37,6 @@ extended_lib_include_dirs = [
     include_directories('.'),
 ]
 
-rpath_value = '$ORIGIN'
-
 libload_both = both_libraries(
   'libload',
   sources,
@@ -46,7 +44,6 @@ libload_both = both_libraries(
   include_directories: lib_include_dirs,
   # Project name already contains 'lib' prefix
   name_prefix:         '',
-  build_rpath:         rpath_value,
   c_args: c_flags,
 #link_args: '/OPT:NOLBR',
 )
