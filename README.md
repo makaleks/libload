@@ -8,7 +8,7 @@ is the most popular plugin binary interface).
 Currently runs on Windows and Linux. Linux interface is supposed to be
 POSIX-compatible. Compilation flags are strict.
 
-# Example
+## Example
 
 An example can be found at `tests/overview`. It is an example of project
 with a library, loaded at runtime.
@@ -20,15 +20,15 @@ To be short, the library only provides functions:
 
 ## Build
 
-This project uses Meson build system. Meson requires Python3 and some
-build backend, like Ninja. After all needed is installed, run:
+This project uses CMake build system:
 
 ```sh
-meson build
-cd build
-ninja build
-ninja test
+cmake -B build
+cmake --build build
+cd build && ctest
 ```
+
+The build output can be found at `build/libload/`
 
 ## Notes
 
