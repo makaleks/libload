@@ -79,35 +79,43 @@ endfunction ()
 
 function (libload_get_project_targets)
     set(arg_options     "")
-    set(arg_values      "SOURCE_DIR" "CUSTOM_PREFIX")
+    set(
+        arg_values
+        "SOURCE_BASE_DIR" "SOURCE_DIR_NAME" "BINARY_BASE_DIR" "CUSTOM_PREFIX"
+    )
     set(arg_multivalues "")
     cmake_parse_arguments(
         LIBLOAD "${arg_options}" "${arg_values}" "${arg_multivalues}" ${ARGN}
     )
 
+    if (NOT DEFINED LIBLOAD_SOURCE_BASE_DIR)
+        message(FATAL_ERROR "LIBLOAD_SOURCE_BASE_DIR must be set!")
+    elseif (NOT DEFINED LIBLOAD_SOURCE_DIR_NAME)
+        set (LIBLOAD_SOURCE_DIR_NAME "libload")
+    endif ()
+
     if (
-        DEFINED ENV{OVERRIDE_THIRD_PARTY_SOURCE_DIR}
-        AND DEFINED ENV{OVERRIDE_THIRD_PARTY_BINARY_DIR}
+        DEFINED OVERRIDE_THIRD_PARTY_SOURCE_DIR
+        AND DEFINED OVERRIDE_THIRD_PARTY_BINARY_DIR
     )
-        set(LIBLOAD_SOURCE_DIR $ENV{OVERRIDE_THIRD_PARTY_SOURCE_DIR})
-        set(LIBLOAD_BINARY_DIR $ENV{OVERRIDE_THIRD_PARTY_BINARY_DIR})
+        set(LIBLOAD_SOURCE_DIR    ${OVERRIDE_THIRD_PARTY_SOURCE_DIR})
+        set(LIBLOAD_BINARY_PREFIX "${OVERRIDE_THIRD_PARTY_BINARY_DIR}/libload_dependency")
         set(
-            CMD
-"${CMAKE_COMMAND} -E env \
-OVERRIDE_THIRD_PARTY_SOURCE_DIR=$ENV{OVERRIDE_THIRD_PARTY_SOURCE_DIR} \
-OVERRIDE_THIRD_PARTY_BINARY_DIR=$ENV{OVERRIDE_THIRD_PARTY_BINARY_DIR} \
-${CMAKE_COMMAND}"
+            CMD_ARGS
+"-DOVERRIDE_THIRD_PARTY_SOURCE_DIR=${OVERRIDE_THIRD_PARTY_SOURCE_DIR}"
+"-DOVERRIDE_THIRD_PARTY_BINARY_DIR=${OVERRIDE_THIRD_PARTY_BINARY_DIR}"
         )
     else ()
-        set(CMD "${CMAKE_COMMAND}")
+        set(LIBLOAD_BINARY_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/libload_dependency")
+        #set(CMD "${CMAKE_COMMAND}")
     endif()
 
     ExternalProject_Add(libload_dependency
-        CMAKE_COMMAND   "${CMD}"
-        SOURCE_DIR      "${LIBLOAD_SOURCE_DIR}"
+        CMAKE_ARGS      ${CMD_ARGS}
+        SOURCE_DIR      "${LIBLOAD_SOURCE_BASE_DIR}/${LIBLOAD_SOURCE_DIR_NAME}"
         INSTALL_COMMAND ""
-        PREFIX          "libload_dependency"
-        BINARY_DIR      ${LIBLOAD_BINARY_DIR}
+        PREFIX          ${LIBLOAD_BINARY_PREFIX}
+        #BINARY_DIR      ${LIBLOAD_BINARY_DIR}
     )
     ExternalProject_Get_Property(libload_dependency SOURCE_DIR BINARY_DIR)
 
