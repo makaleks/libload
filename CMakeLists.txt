@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
-
 project("libload" LANGUAGES C)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include("scripts/libload_get_project_targets.cmake")
 _libload_get_project_layout_final_constants()
